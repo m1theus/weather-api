@@ -1,10 +1,11 @@
 package br.com.cast.clima.business;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class WeatherBusiness {
 		List<ResultWeather> resultList = new ArrayList<>();
 		Map<String, ResultWeather> map = new HashMap<>();
 
-		if (lista != null && lista.size() >= 1) {
+		if (lista.size() >= 5) {
 			for (Weather w : lista) {
 				ResultWeather result = new ResultWeather();
 				result.setTemp(w.getTemp());
@@ -45,12 +46,17 @@ public class WeatherBusiness {
 				result.setVelocidadeVento(w.getVelocidadeVento());
 				result.setDescricao(w.getDescricao());
 				result.setIcone(w.getIcone());
-				result.setData(w.getData());
-				result.setCidade(w.getCidade());
+				
+				String data = dateToString(w.getData());
+				
+				result.setData(data);
+				String cidade = w.getCidade();
+				result.setCidade(cidade);
 
 				resultList.add(result);
 			}
 		} else {
+			deleteByCityName(cityName);
 			WeatherDTO weatherDTO = client.getWeather(cityName);
 
 			for (WeatherDataDTO dto : weatherDTO.getList()) {
@@ -84,6 +90,10 @@ public class WeatherBusiness {
 		return resultList;
 	}
 
+	private void deleteByCityName(String cityName) {
+		repository.delete(cityName);
+	}
+
 	private void insert(ResultWeather result) {
 		Weather weather = new Weather();
 		if (result != null) {
@@ -95,9 +105,34 @@ public class WeatherBusiness {
 			weather.setVelocidadeVento(result.getVelocidadeVento());
 			weather.setDescricao(result.getDescricao());
 			weather.setIcone(result.getIcone());
-			weather.setData(result.getData());
+			
+			Date data = stringToDate(result.getData().substring(0, 10));
+			
+			weather.setData(data);
 			weather.setCidade(result.getCidade());
 		}
 		repository.inserir(weather);
+	}
+	
+	public String dateToString(Date date) {
+		String dataFormatada = "";
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			dataFormatada = format.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dataFormatada;
+	}
+	
+	public Date stringToDate(String data) {
+		Date dataFormatada = null;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			dataFormatada = format.parse(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dataFormatada;
 	}
 }

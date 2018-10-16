@@ -1,5 +1,6 @@
 package br.com.cast.clima.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,21 +17,34 @@ public class WeatherRepository{
     @Autowired
 	public EntityManager entityManager;
 
-	@SuppressWarnings("unchecked")
-	public List<Weather> findAllByCidade(String cidade){
-		StringBuilder hql = new StringBuilder();
-		hql.append("FROM ")
-			.append(Weather.class.getName())
-				.append(" WHERE cidade = :cidade");
-		
-		Query query = entityManager.createQuery(hql.toString());
-		query.setParameter("cidade", cidade);
-		return query.getResultList();
-	}
-
 	
 	public void inserir(Weather weather) {
 		entityManager.persist(weather);
+	}
+
+
+	public void delete(String cityName) {
+		StringBuilder hql = new StringBuilder();
+		hql.append("DELETE FROM ")
+			.append(Weather.class.getName())
+			.append(" WHERE cidade = :cidade");
+		Query query = entityManager.createQuery(hql.toString());
+		query.setParameter("cidade", cityName);
+		query.executeUpdate();
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public List<Weather> findAllByCidade(String cityName) {
+		StringBuilder hql = new StringBuilder();
+		hql.append("FROM ")
+			.append(Weather.class.getName())
+				.append(" WHERE cidade = :cidade and data >= :dataAtual");
+		
+		Query query = entityManager.createQuery(hql.toString());
+		query.setParameter("cidade", cityName);
+		query.setParameter("dataAtual", new Date());
+		return query.getResultList();
 	}
 	
 }

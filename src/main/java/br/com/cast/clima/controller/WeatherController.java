@@ -18,7 +18,7 @@ public class WeatherController {
 
 	@GetMapping("/weather/{cityName}")
 	public List<ResultWeather> buscarCidade(@PathVariable String cityName) {
-		return weatherBusiness.getWeather(cityName);
+		return weatherBusiness.getWeather(cityName.toLowerCase());
 	}
 	
 }
