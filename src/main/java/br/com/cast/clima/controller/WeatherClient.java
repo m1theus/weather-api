@@ -1,6 +1,8 @@
 package br.com.cast.clima.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -8,8 +10,9 @@ import br.com.cast.clima.entity.WeatherDTO;
 
 @Component
 public class WeatherClient {
-
-	private static final String API_URL = "http://api.openweathermap.org/data/2.5/forecast?q={cityName},br&units=metric&mode=json&appid=734547ee8ad10cf414aae8638be088ff&lang=pt";
+	
+	@Autowired
+	private Environment env;
 	
 	private final RestTemplate restTemplate;
 	
@@ -17,9 +20,10 @@ public class WeatherClient {
 		this.restTemplate = builder.build();
 	}
 	
-	
 	public WeatherDTO getWeather(String cityName) {
-		return this.restTemplate.getForObject(API_URL, WeatherDTO.class, cityName);
+		String openWeatherUrl = env.getProperty("weather.url");
+		String appId = env.getProperty("weather.appid");
+		return this.restTemplate.getForObject(openWeatherUrl , WeatherDTO.class, cityName, appId);
 	}
 
 }
