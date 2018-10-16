@@ -1,4 +1,4 @@
-package br.com.cast.clima.repository;
+package br.com.cast.weather.repository;
 
 import java.util.Date;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import br.com.cast.clima.entity.Weather;
+import br.com.cast.weather.entity.Weather;
 
 @Repository
 public class WeatherRepository{

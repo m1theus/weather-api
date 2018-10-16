@@ -1,4 +1,4 @@
-package br.com.cast.clima.entity;
+package br.com.cast.weather.entity;
 
 import java.util.List;
 

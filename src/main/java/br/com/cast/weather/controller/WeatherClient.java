@@ -1,4 +1,4 @@
-package br.com.cast.clima.controller;
+package br.com.cast.weather.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -6,7 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import br.com.cast.clima.entity.WeatherDTO;
+import br.com.cast.weather.entity.WeatherDTO;
 
 @Component
 public class WeatherClient {

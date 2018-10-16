@@ -1,4 +1,4 @@
-package br.com.cast.clima.business;
+package br.com.cast.weather.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,16 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.cast.clima.controller.WeatherClient;
-import br.com.cast.clima.entity.ResultWeather;
-import br.com.cast.clima.entity.Weather;
-import br.com.cast.clima.entity.WeatherDTO;
-import br.com.cast.clima.entity.WeatherDataDTO;
-import br.com.cast.clima.repository.WeatherRepository;
+import br.com.cast.weather.controller.WeatherClient;
+import br.com.cast.weather.entity.ResultWeather;
+import br.com.cast.weather.entity.Weather;
+import br.com.cast.weather.entity.WeatherDTO;
+import br.com.cast.weather.entity.WeatherDataDTO;
+import br.com.cast.weather.repository.WeatherRepository;
 
 @Service
 @Transactional
-public class WeatherBusiness {
+public class WeatherService {
 
 	@Autowired
 	private WeatherRepository repository;
