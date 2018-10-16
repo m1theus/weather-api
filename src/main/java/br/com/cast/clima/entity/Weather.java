@@ -1,5 +1,6 @@
 package br.com.cast.clima.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -50,5 +51,31 @@ public class Weather {
 	
 	@Column(name="descricao")
 	private String descricao;
+	
+	public static ResultWeather fromEntity(Weather weather, String cityName) {
+		ResultWeather dto = new ResultWeather();
+		dto.setTemp(weather.getTemp());
+		dto.setTempMin(weather.getTempMin());
+		dto.setTempMax(weather.getTempMax());
+		dto.setPressao(weather.getPressao());
+		dto.setUmidade(weather.getUmidade());
+		dto.setVelocidadeVento(weather.getVelocidadeVento());
+		dto.setDescricao(weather.getDescricao());
+		dto.setIcone(weather.getIcone());
+		dto.setData(dateToString(weather.getData()));
+		dto.setCidade(cityName);
+		return dto;
+	}
+	
+	public static String dateToString(Date date) {
+		String dataFormatada = "";
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			dataFormatada = format.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dataFormatada;
+	}
 
 }

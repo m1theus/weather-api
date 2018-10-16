@@ -92,5 +92,24 @@ public class ResultWeather {
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
 	}
+	
+
+	public static ResultWeather fromDTO(String cityName, WeatherDataDTO dto) {
+		ResultWeather result = new ResultWeather();
+		result.setTemp(dto.getMain().getTemp());
+		result.setTempMin(dto.getMain().getTempMin());
+		result.setTempMax(dto.getMain().getTempMax());
+		result.setUmidade(dto.getMain().getHumidity());
+		result.setPressao(dto.getMain().getPressure());
+		result.setVelocidadeVento(dto.getWind().getSpeed());
+		result.setData(dto.getDtTxt());
+		result.setCidade(cityName);
+
+		for (WeatherDescriptionDTO resultWeather : dto.getWeather()) {
+			result.setIcone(resultWeather.getIcon());
+			result.setDescricao(resultWeather.getDescription());
+		}
+		return result;
+	}
 
 }

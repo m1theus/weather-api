@@ -16,7 +16,6 @@ import br.com.cast.clima.entity.ResultWeather;
 import br.com.cast.clima.entity.Weather;
 import br.com.cast.clima.entity.WeatherDTO;
 import br.com.cast.clima.entity.WeatherDataDTO;
-import br.com.cast.clima.entity.WeatherDescriptionDTO;
 import br.com.cast.clima.repository.WeatherRepository;
 
 @Service
@@ -31,63 +30,38 @@ public class WeatherBusiness {
 
 	public List<ResultWeather> getWeather(String cityName) {
 
-		List<Weather> lista = repository.findAllByCidade(cityName);
-		List<ResultWeather> resultList = new ArrayList<>();
-		Map<String, ResultWeather> map = new HashMap<>();
+		List<Weather> listWeather = repository.findAllByCidade(cityName);
+		List<ResultWeather> listResultWeather = new ArrayList<>();
 
-		if (lista.size() >= 5) {
-			for (Weather w : lista) {
-				ResultWeather result = new ResultWeather();
-				result.setTemp(w.getTemp());
-				result.setTempMin(w.getTempMin());
-				result.setTempMax(w.getTempMax());
-				result.setPressao(w.getPressao());
-				result.setUmidade(w.getUmidade());
-				result.setVelocidadeVento(w.getVelocidadeVento());
-				result.setDescricao(w.getDescricao());
-				result.setIcone(w.getIcone());
-				
-				String data = dateToString(w.getData());
-				
-				result.setData(data);
-				String cidade = w.getCidade();
-				result.setCidade(cidade);
-
-				resultList.add(result);
+		if (listWeather.size() >= 5) {
+			
+			for (Weather weather : listWeather) {
+				ResultWeather result = Weather.fromEntity(weather, cityName);
+				listResultWeather.add(result);
 			}
+			
 		} else {
+			
 			deleteByCityName(cityName);
+			Map<String, ResultWeather> map = new HashMap<>();
 			WeatherDTO weatherDTO = client.getWeather(cityName);
 
 			for (WeatherDataDTO dto : weatherDTO.getList()) {
+				
 				String data = dto.getDtTxt().substring(0, 10);
-
 				if (map.containsKey(data)) {
 					continue;
 				}
 
-				ResultWeather result = new ResultWeather();
-				result.setTemp(dto.getMain().getTemp());
-				result.setTempMin(dto.getMain().getTempMin());
-				result.setTempMax(dto.getMain().getTempMax());
-				result.setUmidade(dto.getMain().getHumidity());
-				result.setPressao(dto.getMain().getPressure());
-				result.setVelocidadeVento(dto.getWind().getSpeed());
-				result.setData(dto.getDtTxt());
-				result.setCidade(cityName);
-
-				for (WeatherDescriptionDTO resultWeather : dto.getWeather()) {
-					result.setIcone(resultWeather.getIcon());
-					result.setDescricao(resultWeather.getDescription());
-				}
+				ResultWeather result = ResultWeather.fromDTO(cityName, dto);
 
 				map.put(data, result);
-				resultList.add(result);
+				listResultWeather.add(result);
 				insert(result);
 			}
 
 		}
-		return resultList;
+		return listResultWeather;
 	}
 
 	private void deleteByCityName(String cityName) {
@@ -112,17 +86,6 @@ public class WeatherBusiness {
 			weather.setCidade(result.getCidade());
 		}
 		repository.inserir(weather);
-	}
-	
-	public String dateToString(Date date) {
-		String dataFormatada = "";
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			dataFormatada = format.format(date);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return dataFormatada;
 	}
 	
 	public Date stringToDate(String data) {
